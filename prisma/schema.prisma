@@ -9,3 +9,16 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id        String    @id @default(cuid())
+  email     String    @unique
+  username  String    @unique
+  staffId   String    @unique
+  password  String
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?  @updatedAt
+
+  @@index([email, username, staffId])
+}

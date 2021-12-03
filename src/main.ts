@@ -1,3 +1,4 @@
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import {
   FastifyAdapter,
@@ -24,11 +25,23 @@ async function bootstrap() {
     },
   });
 
+  await app.register(fastifyHelmet, {
+    contentSecurityPolicy: false,
+  });
+
+  // global url prefix
+  app.setGlobalPrefix('/api');
+
+  // enable application level validation & transformation
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+
   // setup swagger documentation
   const config = new DocumentBuilder()
     .setTitle('KEETS API')
     .setDescription('KEETS API')
     .setVersion('1.0')
+    .addBearerAuth()
+    .addTag('KEETS')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
