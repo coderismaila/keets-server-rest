@@ -1,10 +1,10 @@
 import { Prisma, User as FullUser } from '.prisma/client';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { hashPassword } from 'src/utils/bcrypt.password';
-import { PrismaService } from '../prisma.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './user.model';
+import { PrismaService } from '../../prisma.service';
+import { CreateUserDto } from '../dto/create-user.dto';
+import { UpdateUserDto } from '../dto/update-user.dto';
+import { User } from '../user.model';
 
 @Injectable()
 export class UserService {

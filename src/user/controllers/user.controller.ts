@@ -7,17 +7,18 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
-import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { User } from './user.model';
 import { Role } from '@prisma/client';
 import { Auth } from 'src/auth/decorator/auth.decorator';
+import { CreateUserDto } from '../dto/create-user.dto';
+import { UpdateUserDto } from '../dto/update-user.dto';
+import { User } from '../user.model';
+import { UserService } from '../services/user.service';
 
 @ApiTags('User')
 @Controller('user')
