@@ -1,5 +1,6 @@
 import { Prisma, User as FullUser } from '.prisma/client';
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { hashPassword } from 'src/utils/bcrypt.password';
 import { PrismaService } from '../prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -8,6 +9,7 @@ import { User } from './user.model';
 @Injectable()
 export class UserService {
   constructor(private readonly prismaService: PrismaService) {}
+
   async create(createUserDto: CreateUserDto): Promise<User> {
     // check if user exists
     const isUser = await this.prismaService.user.findFirst({
@@ -24,6 +26,8 @@ export class UserService {
       throw new BadRequestException('User already exists');
     }
 
+    createUserDto.password = await hashPassword(createUserDto.password);
+
     // create user
     const user = await this.prismaService.user.create({
       data: createUserDto,
@@ -32,6 +36,7 @@ export class UserService {
         username: true,
         email: true,
         staffId: true,
+        role: true,
       },
     });
 
@@ -45,6 +50,7 @@ export class UserService {
         username: true,
         email: true,
         staffId: true,
+        role: true,
       },
     });
   }
@@ -72,6 +78,7 @@ export class UserService {
         username: true,
         email: true,
         staffId: true,
+        role: true,
       },
     });
   }
@@ -107,6 +114,7 @@ export class UserService {
         username: true,
         email: true,
         staffId: true,
+        role: true,
       },
     });
   }
@@ -125,6 +133,7 @@ export class UserService {
         username: true,
         email: true,
         staffId: true,
+        role: true,
       },
     });
   }

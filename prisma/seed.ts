@@ -12,6 +12,7 @@ async function main() {
       email: 'admin@keets.com',
       staffId: '000001',
       username: 'admin',
+      role: 'ADMIN',
       password,
     },
   });
@@ -26,8 +27,8 @@ async function main() {
     },
   });
 
-  delete admin.password;
-  delete user.password;
+  // delete admin.password;
+  // delete user.password;
 
   console.log({ admin, user });
 }
