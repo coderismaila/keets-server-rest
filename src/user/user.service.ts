@@ -1,4 +1,4 @@
-import { Prisma } from '.prisma/client';
+import { Prisma, User as FullUser } from '.prisma/client';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -74,6 +74,22 @@ export class UserService {
         staffId: true,
       },
     });
+  }
+
+  async findUserByEmailOrUsernameOrStaffId(identifier): Promise<FullUser> {
+    const user = await this.prismaService.user.findFirst({
+      where: {
+        OR: [
+          { username: identifier },
+          { staffId: identifier },
+          { email: identifier },
+        ],
+      },
+    });
+
+    if (!user) throw new BadRequestException('user does not exist');
+
+    return user;
   }
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
