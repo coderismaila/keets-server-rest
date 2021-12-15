@@ -32,6 +32,7 @@ model Profile {
   firstName     String
   lastName      String
   middleName    String?
+  gender        Gender
   birthDate     DateTime?
   phoneNumber   String
   addressLine1  String?
@@ -42,10 +43,18 @@ model Profile {
   country       String?   @default("nigeria")
 
   user User @relation(fields: [userId], references: [id])
+
+  @@unique([phoneNumber])
+  @@index([userId, phoneNumber])
 }
 
 enum Role {
   USER
   MOD
   ADMIN
+}
+
+enum Gender {
+  MALE
+  FEMALE
 }
