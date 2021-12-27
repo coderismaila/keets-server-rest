@@ -62,11 +62,56 @@ model AreaOffice {
   technicalManager Profile? @relation(name: "technicalManager", fields: [technicalManagerId], references: [id])
   areaManager      Profile? @relation(name: "areaManager", fields: [areaManagerId], references: [id])
 
-  user Profile[] @relation("areaOffice")
+  user    Profile[] @relation("areaOffice")
+  station Station[] @relation("stationAreaOffice")
 
 }
 
+model Station {
+  id           String      @id @default(cuid())
+  name         String      @unique
+  areaOfficeId String?     @unique
+  stationType  StationType
 
+  areaOffice AreaOffice? @relation(name: "stationAreaOffice", fields: [areaOfficeId], references: [id])
+
+  powerTransformer PowerTransformer[] @relation("stationPowerTransformer")
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+
+}
+
+model PowerTransformer {
+  id           String  @id @default(cuid())
+  name         String  @unique
+  stationId    String  @unique
+  capacityKVA  Float   @default(0)
+  feeder33kvId String? @unique
+
+  feeder33kv Feeder?  @relation(name: "feeder33kv", fields: [feeder33kvId], references: [id])
+  station    Station  @relation(name: "stationPowerTransformer", fields: [stationId], references: [id])
+  feeder     Feeder[] @relation("feederPowerTransformer")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Feeder {
+  id                 String       @id @default(cuid())
+  name               String       @unique
+  voltageLevel       VoltageLevel
+  routeLength        Float?       @default(0)
+  kaedcoCode         String       @unique
+  nercCode           String       @unique
+  powerTransformerId String
+
+  powerTransformer       PowerTransformer   @relation(name: "feederPowerTransformer", fields: [powerTransformerId], references: [id])
+  powerTransformerSource PowerTransformer[] @relation("feeder33kv")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
 
 enum Role {
   USER
@@ -77,4 +122,14 @@ enum Role {
 enum Gender {
   MALE
   FEMALE
+}
+
+enum StationType {
+  TRANSMISSION
+  DISTRIBUTION
+}
+
+enum VoltageLevel {
+  KV33
+  KV11
 }
