@@ -21,7 +21,8 @@ model User {
   createdAt DateTime  @default(now())
   updatedAt DateTime? @updatedAt
 
-  profile Profile[]
+  profile Profile?
+
 
   @@index([email, username, staffId])
 }
@@ -32,6 +33,7 @@ model Profile {
   firstName     String
   lastName      String
   middleName    String?
+  areaOfficeId  String
   gender        Gender
   birthDate     DateTime?
   phoneNumber   String
@@ -42,11 +44,29 @@ model Profile {
   stateOfOrigin String?
   country       String?   @default("nigeria")
 
-  user User @relation(fields: [userId], references: [id])
+  user             User         @relation(fields: [userId], references: [id])
+  areaOffice       AreaOffice   @relation(name: "areaOffice", fields: [areaOfficeId], references: [id])
+  technicalManager AreaOffice[] @relation("technicalManager")
+  areaManager      AreaOffice[] @relation("areaManager")
 
   @@unique([phoneNumber])
   @@index([userId, phoneNumber])
 }
+
+model AreaOffice {
+  id                 String  @id @default(cuid())
+  name               String  @unique
+  areaManagerId      String? @unique
+  technicalManagerId String? @unique
+
+  technicalManager Profile? @relation(name: "technicalManager", fields: [technicalManagerId], references: [id])
+  areaManager      Profile? @relation(name: "areaManager", fields: [areaManagerId], references: [id])
+
+  user Profile[] @relation("areaOffice")
+
+}
+
+
 
 enum Role {
   USER
