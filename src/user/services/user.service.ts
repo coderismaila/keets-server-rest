@@ -40,6 +40,12 @@ export class UserService {
       },
     });
 
+    if (user) {
+      await this.prismaService.profile.create({
+        data: { user: { connect: { id: user.id } } },
+      });
+    }
+
     return user;
   }
 
@@ -69,7 +75,7 @@ export class UserService {
       },
     });
     if (!user) {
-      throw new BadRequestException('User does not exist');
+      throw new BadRequestException('Invalid user credentials');
     }
     return this.prismaService.user.findUnique({
       where: userWhereUniqueInput,
@@ -94,7 +100,7 @@ export class UserService {
       },
     });
 
-    if (!user) throw new BadRequestException('user does not exist');
+    if (!user) throw new BadRequestException('Invalid user credentials');
 
     return user;
   }

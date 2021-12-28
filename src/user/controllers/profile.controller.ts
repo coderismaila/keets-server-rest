@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Request,
   UseGuards,
 } from '@nestjs/common';
 
@@ -27,6 +28,11 @@ export class ProfileController {
   @Get(':id')
   getUserProfileById(@Param('id') id: string) {
     return this.profileService.getProfileById(id);
+  }
+
+  @Get('user')
+  getUserProfileByUserId(@Request() req: any) {
+    return this.profileService.getProfileByUserId(req.user.id);
   }
 
   @Patch(':id')

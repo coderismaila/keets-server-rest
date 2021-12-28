@@ -30,13 +30,13 @@ model User {
 model Profile {
   id            String    @id @default(cuid())
   userId        String    @unique
-  firstName     String
-  lastName      String
+  firstName     String?
+  lastName      String?
   middleName    String?
-  areaOfficeId  String
-  gender        Gender
+  areaOfficeId  String?
+  gender        Gender?
   birthDate     DateTime?
-  phoneNumber   String
+  phoneNumber   String?
   addressLine1  String?
   addressLine2  String?
   city          String?
@@ -45,7 +45,7 @@ model Profile {
   country       String?   @default("nigeria")
 
   user             User         @relation(fields: [userId], references: [id])
-  areaOffice       AreaOffice   @relation(name: "areaOffice", fields: [areaOfficeId], references: [id])
+  areaOffice       AreaOffice?   @relation(name: "areaOffice", fields: [areaOfficeId], references: [id])
   technicalManager AreaOffice[] @relation("technicalManager")
   areaManager      AreaOffice[] @relation("areaManager")
 

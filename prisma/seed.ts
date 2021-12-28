@@ -84,7 +84,7 @@ async function main() {
       firstName: 'ismail',
       lastName: 'hassan',
       gender: 'MALE',
-      phoneNumber: '+2348062132407',
+      phoneNumber: '+2348136687654',
       user: {
         connect: {
           id: admin.id,

@@ -39,6 +39,18 @@ export class ProfileService {
     return profile;
   }
 
+  async getProfileByUserId(userId: string): Promise<Profile> {
+    const profile = await this.prismaService.profile.findUnique({
+      where: { userId },
+      include: { user: true },
+    });
+    if (!profile) throw new BadRequestException('invalid profile');
+
+    delete profile.user.password;
+
+    return profile;
+  }
+
   async updateProfile(
     id: string,
     profileDto: UpdateProfileDto,
