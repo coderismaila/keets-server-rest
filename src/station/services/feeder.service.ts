@@ -17,11 +17,20 @@ export class FeederService {
 
     return this.prismaService.feeder.create({
       data: createFeederDto,
+      include: {
+        powerTransformer: true,
+        powerTransformerSource: true,
+      },
     });
   }
 
   async findAllFeeder(): Promise<Feeder[]> {
-    return this.prismaService.feeder.findMany({});
+    return this.prismaService.feeder.findMany({
+      include: {
+        powerTransformer: true,
+        powerTransformerSource: true,
+      },
+    });
   }
 
   async findAllFeederOnPowerTransformer(
@@ -38,12 +47,20 @@ export class FeederService {
 
     return this.prismaService.feeder.findMany({
       where: { powerTransformerId },
+      include: {
+        powerTransformer: true,
+        powerTransformerSource: true,
+      },
     });
   }
 
   async findFeederById(id: string) {
     const feeder = await this.prismaService.feeder.findUnique({
       where: { id },
+      include: {
+        powerTransformer: true,
+        powerTransformerSource: true,
+      },
     });
 
     if (!feeder) throw new BadRequestException('feeder not found');
@@ -65,6 +82,10 @@ export class FeederService {
     return this.prismaService.feeder.update({
       where: { id },
       data: updateFeederDto,
+      include: {
+        powerTransformer: true,
+        powerTransformerSource: true,
+      },
     });
   }
 

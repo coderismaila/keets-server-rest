@@ -14,16 +14,22 @@ export class StationService {
     });
     if (station) throw new BadRequestException('station name already exist');
 
-    return this.prismaService.station.create({ data: createStationDto });
+    return this.prismaService.station.create({
+      data: createStationDto,
+      include: { areaOffice: true },
+    });
   }
 
   findAllStation() {
-    return this.prismaService.station.findMany({});
+    return this.prismaService.station.findMany({
+      include: { areaOffice: true, powerTransformer: true },
+    });
   }
 
   async findStationById(id: string) {
     const station = await this.prismaService.station.findUnique({
       where: { id },
+      include: { areaOffice: true, powerTransformer: true },
     });
 
     if (!station) throw new BadRequestException('station not found');

@@ -1,4 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { StationType } from '@prisma/client';
 import { PrismaService } from 'src/prisma.service';
 import { CreatePowerTransformerDto } from '../dto/create-power-transformer.dto';
 import { UpdatePowerTransformerDto } from '../dto/update-power-transformer.dto';
@@ -37,13 +38,25 @@ export class PowerTransformerService {
     });
   }
 
-  async findAllPowerTransformer() {
-    return this.prismaService.powerTransformer.findMany({});
+  async findAllPowerTransformer(stationType?: StationType) {
+    return this.prismaService.powerTransformer.findMany({
+      where: { station: { stationType } },
+      include: {
+        station: true,
+        feeder33kv: true,
+        feeder: true,
+      },
+    });
   }
 
   async findAllStationPowerTransformer(stationId: string) {
     return this.prismaService.powerTransformer.findMany({
       where: { stationId },
+      include: {
+        station: true,
+        feeder33kv: true,
+        feeder: true,
+      },
     });
   }
 
@@ -51,6 +64,11 @@ export class PowerTransformerService {
     const powerTransformer =
       await this.prismaService.powerTransformer.findUnique({
         where: { id },
+        include: {
+          station: true,
+          feeder33kv: true,
+          feeder: true,
+        },
       });
 
     if (!powerTransformer)

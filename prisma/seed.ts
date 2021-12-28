@@ -41,7 +41,7 @@ async function main() {
 
   const areaoffice = await prisma.areaOffice.create({
     data: {
-      name: 'rigasa',
+      name: 'mando',
     },
   });
 
@@ -121,17 +121,95 @@ async function main() {
       },
       areaOffice: {
         connect: {
-          name: 'rigasa',
+          name: 'mando',
         },
       },
     },
   });
 
   await prisma.areaOffice.update({
-    where: { name: 'rigasa' },
+    where: { name: 'mando' },
     data: {
       areaManager: { connect: { id: am1Profile.id } },
       technicalManager: { connect: { id: tm1Profile.id } },
+    },
+  });
+
+  await prisma.station.create({
+    data: {
+      name: '330/132kv mando transmission station kaduna',
+      stationType: 'TRANSMISSION',
+    },
+  });
+
+  await prisma.station.create({
+    data: {
+      name: '1x7.5mva, 33/11kv mothercat injection substation',
+      stationType: 'DISTRIBUTION',
+      areaOffice: {
+        connect: {
+          name: 'mando',
+        },
+      },
+    },
+  });
+
+  const t4 = await prisma.powerTransformer.create({
+    data: {
+      name: 't4 mando town ii',
+      capacityKVA: 60000,
+      station: {
+        connect: { name: '330/132kv mando transmission station kaduna' },
+      },
+    },
+  });
+
+  await prisma.feeder.create({
+    data: {
+      name: '33kv kinkinnau',
+      voltageLevel: 'KV33',
+      kaedcoCode: '33knk',
+      nercCode: '33knk',
+      powerTransformer: {
+        connect: { id: t4.id },
+      },
+    },
+  });
+
+  const mcaPowerTx = await prisma.powerTransformer.create({
+    data: {
+      name: 't1',
+      capacityKVA: 7500,
+      station: {
+        connect: { name: '1x7.5mva, 33/11kv mothercat injection substation' },
+      },
+      feeder33kv: {
+        connect: { name: '33kv kinkinnau' },
+      },
+    },
+  });
+
+  await prisma.feeder.create({
+    data: {
+      name: '11kv mando road',
+      voltageLevel: 'KV11',
+      kaedcoCode: 'mdo',
+      nercCode: 'mdo',
+      powerTransformer: {
+        connect: { id: mcaPowerTx.id },
+      },
+    },
+  });
+
+  await prisma.feeder.create({
+    data: {
+      name: '11kv water resources',
+      voltageLevel: 'KV11',
+      kaedcoCode: 'wtr',
+      nercCode: 'wtr',
+      powerTransformer: {
+        connect: { id: mcaPowerTx.id },
+      },
     },
   });
 

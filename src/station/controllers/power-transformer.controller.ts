@@ -6,7 +6,9 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
+import { StationType } from '@prisma/client';
 import { CreatePowerTransformerDto } from '../dto/create-power-transformer.dto';
 import { PowerTransformerService } from '../services/power-transformer.service';
 
@@ -35,8 +37,8 @@ export class PowerTransformerController {
   }
 
   @Get('power-transformer')
-  findAllPowerTransformer() {
-    return this.powerTransformerService.findAllPowerTransformer();
+  findAllPowerTransformer(@Query('stationType') stationType: StationType) {
+    return this.powerTransformerService.findAllPowerTransformer(stationType);
   }
 
   @Get('power-transformer/:id')
