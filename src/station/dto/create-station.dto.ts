@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { StationType } from '@prisma/client';
 import { Transform } from 'class-transformer';
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsOptional } from 'class-validator';
 
 export class CreateStationDto {
   @ApiProperty({
@@ -17,7 +17,7 @@ export class CreateStationDto {
     description: 'id of area office',
   })
   @IsNotEmpty()
-  areaOfficeId: string;
+  areaOfficeName: string;
 
   @ApiProperty({
     required: true,
@@ -27,4 +27,7 @@ export class CreateStationDto {
   })
   @IsNotEmpty()
   stationType: StationType;
+
+  @IsOptional()
+  powerTransformer?: Array<{ name: string; capacityKVA: number }>;
 }
