@@ -15,8 +15,6 @@ export class StationService {
     });
     if (station) throw new BadRequestException('station name already exist');
 
-    console.log(createStationDto.powerTransformer);
-
     return this.prismaService.station.create({
       data: {
         name: createStationDto.name,
@@ -34,7 +32,12 @@ export class StationService {
 
   findAllStation() {
     return this.prismaService.station.findMany({
-      include: { areaOffice: true, powerTransformer: true },
+      include: {
+        areaOffice: true,
+        powerTransformer: {
+          include: { feeder33kv: true, feeder: true },
+        },
+      },
     });
   }
 
