@@ -33,8 +33,8 @@ export class AuthService {
     };
   }
 
-  async signup(userDto: CreateUserDto) {
-    const user = await this.userService.create(userDto);
+  async signup(createUserDto: CreateUserDto) {
+    const user = await this.userService.create(createUserDto);
     const payload = { id: user.id };
 
     return {

@@ -1,10 +1,9 @@
-import { Prisma, User as FullUser } from '.prisma/client';
+import { Prisma, User } from '.prisma/client';
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { hashPassword } from 'src/utils/bcrypt.password';
+import { comparePassword, hashPassword } from 'src/utils/bcrypt.password';
 import { PrismaService } from '../../prisma.service';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
-import { User } from '../user.model';
 
 @Injectable()
 export class UserService {
@@ -31,34 +30,13 @@ export class UserService {
     // create user
     const user = await this.prismaService.user.create({
       data: createUserDto,
-      select: {
-        id: true,
-        username: true,
-        email: true,
-        staffId: true,
-        role: true,
-      },
     });
-
-    if (user) {
-      await this.prismaService.profile.create({
-        data: { user: { connect: { id: user.id } } },
-      });
-    }
 
     return user;
   }
 
   async findUsers(): Promise<User[]> {
-    return this.prismaService.user.findMany({
-      select: {
-        id: true,
-        username: true,
-        email: true,
-        staffId: true,
-        role: true,
-      },
-    });
+    return this.prismaService.user.findMany({});
   }
 
   findUser(
@@ -67,29 +45,16 @@ export class UserService {
     //check if user exists
     const user = this.prismaService.user.findUnique({
       where: userWhereUniqueInput,
-      select: {
-        id: true,
-        username: true,
-        email: true,
-        staffId: true,
-      },
     });
     if (!user) {
-      throw new BadRequestException('Invalid user credentials');
+      throw new BadRequestException('Invalid user details provided');
     }
     return this.prismaService.user.findUnique({
       where: userWhereUniqueInput,
-      select: {
-        id: true,
-        username: true,
-        email: true,
-        staffId: true,
-        role: true,
-      },
     });
   }
 
-  async findUserByEmailOrUsernameOrStaffId(identifier): Promise<FullUser> {
+  async findUserByEmailOrUsernameOrStaffId(identifier: string): Promise<User> {
     const user = await this.prismaService.user.findFirst({
       where: {
         OR: [
@@ -98,6 +63,7 @@ export class UserService {
           { email: identifier },
         ],
       },
+      include: { jobDescription: true, areaOffice: true },
     });
 
     if (!user) throw new BadRequestException('Invalid user credentials');
@@ -106,6 +72,7 @@ export class UserService {
   }
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
+    console.log(updateUserDto);
     // check if user is valid
     const isUser = await this.prismaService.user.findUnique({
       where: { id },
@@ -115,13 +82,7 @@ export class UserService {
     return this.prismaService.user.update({
       where: { id },
       data: updateUserDto,
-      select: {
-        id: true,
-        username: true,
-        email: true,
-        staffId: true,
-        role: true,
-      },
+      include: { jobDescription: true, areaOffice: true },
     });
   }
 
@@ -134,13 +95,31 @@ export class UserService {
 
     return this.prismaService.user.delete({
       where: { id },
-      select: {
-        id: true,
-        username: true,
-        email: true,
-        staffId: true,
-        role: true,
-      },
     });
+  }
+
+  async updatePassword(
+    id: string,
+    updatePasswordDto: { password: string; newPassword: string },
+  ): Promise<User> {
+    const user = await this.prismaService.user.findUnique({
+      where: { id },
+    });
+
+    const passwordMatch = await comparePassword(
+      updatePasswordDto.password,
+      user.password,
+    );
+
+    if (!passwordMatch) {
+      throw new BadRequestException('Invalid credential provided');
+    }
+
+    // hash new password
+    const hashedPassword = await hashPassword(updatePasswordDto.newPassword);
+
+    this.update(id, { password: hashedPassword });
+
+    return user;
   }
 }

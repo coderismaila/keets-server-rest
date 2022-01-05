@@ -20,6 +20,7 @@ export class AreaOfficeService {
   async findAllAreaOffice(): Promise<AreaOffice[]> {
     return this.prismaService.areaOffice.findMany({
       include: { areaManager: true, technicalManager: true },
+      orderBy: { name: 'asc' },
     });
   }
 

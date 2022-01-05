@@ -22,3 +22,24 @@ export const areaOffices = [
   { name: 'kafanchan' },
   { name: 'makera' },
 ];
+
+export const jobDescription = [
+  { name: 'power lines technician', description: '' },
+  { name: 'distribution system operator', description: '' },
+  { name: 'power cable technician', description: '' },
+  { name: 'protection and testing engineer', description: '' },
+  { name: 'power system engineer', description: '' },
+  {
+    name: 'analytics and coordination officer',
+    description:
+      'responsible for data collation and preparation for the technical service department',
+  },
+];
+
+export const stations = [
+  {
+    name: '1x7.5mva, 33/11kv mothercat injection substation',
+    stationType: 'DISTRIBUTION',
+    areaOfficeName: 'mando',
+  },
+];
