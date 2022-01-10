@@ -15,6 +15,8 @@ export class StationService {
     });
     if (station) throw new BadRequestException('station name already exist');
 
+    console.log('createStationDto', createStationDto);
+
     return this.prismaService.station.create({
       data: {
         name: createStationDto.name,
@@ -53,11 +55,11 @@ export class StationService {
   }
 
   async updateStation(id: string, updateStationDto: UpdateStationDto) {
-    const station = await this.prismaService.station.findUnique({
+    const stationExists = await this.prismaService.station.findUnique({
       where: { id },
     });
 
-    if (!station) throw new BadRequestException('station not found');
+    if (!stationExists) throw new BadRequestException('station not found');
 
     return this.prismaService.station.update({
       where: { id },

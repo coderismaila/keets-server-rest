@@ -120,10 +120,6 @@ export class CreateUserDto {
   @IsOptional()
   country?: string;
 
-  @ApiProperty({ required: true, description: 'user id of refernced user' })
-  @IsNotEmpty()
-  userId: string;
-
   @ApiProperty({
     required: true,
     description: 'id of referenced area office',

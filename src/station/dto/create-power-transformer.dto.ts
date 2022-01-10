@@ -22,4 +22,19 @@ export class CreatePowerTransformerDto {
 
   @IsOptional()
   feeder33kvId?: string;
+
+  @IsOptional()
+  voltageRating: string;
+
+  @IsOptional()
+  ratedCurrent: number;
+
+  @IsOptional()
+  transformerPeakLoadMW?: number;
+
+  @IsOptional()
+  sourcePowerTransformerId?: string;
+
+  @IsOptional()
+  sourceStationId?: string;
 }

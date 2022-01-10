@@ -21,6 +21,7 @@ export const areaOffices = [
   { name: 'gusau' },
   { name: 'kafanchan' },
   { name: 'makera' },
+  { name: 'transmission' },
 ];
 
 export const jobDescription = [

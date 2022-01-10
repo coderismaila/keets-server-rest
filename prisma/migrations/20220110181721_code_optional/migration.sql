@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Feeder" ALTER COLUMN "kaedcoCode" DROP NOT NULL,
+ALTER COLUMN "nercCode" DROP NOT NULL;

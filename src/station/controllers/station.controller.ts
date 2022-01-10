@@ -35,6 +35,7 @@ export class StationController {
     @Param('id') id: string,
     @Body() updateStationDto: UpdateStationDto,
   ) {
+    console.log(updateStationDto.powerTransformer);
     return this.stationService.updateStation(id, updateStationDto);
   }
 

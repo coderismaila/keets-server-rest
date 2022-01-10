@@ -36,7 +36,9 @@ export class UserService {
   }
 
   async findUsers(): Promise<User[]> {
-    return this.prismaService.user.findMany({});
+    return this.prismaService.user.findMany({
+      include: { areaOffice: true, jobDescription: true },
+    });
   }
 
   findUser(
@@ -51,6 +53,7 @@ export class UserService {
     }
     return this.prismaService.user.findUnique({
       where: userWhereUniqueInput,
+      include: { areaOffice: true, jobDescription: true },
     });
   }
 
@@ -72,7 +75,6 @@ export class UserService {
   }
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
-    console.log(updateUserDto);
     // check if user is valid
     const isUser = await this.prismaService.user.findUnique({
       where: { id },

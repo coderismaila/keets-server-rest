@@ -14,12 +14,8 @@ import { FeederService } from '../services/feeder.service';
 export class FeederController {
   constructor(private readonly feederService: FeederService) {}
 
-  @Post('power-transformer/:powertxid/feeder')
-  createFeeder(
-    @Param('powertxid') powertxid: string,
-    @Body() createFeederDto: CreateFeederDto,
-  ) {
-    createFeederDto.powerTransformerId = powertxid;
+  @Post('feeder')
+  createFeeder(@Body() createFeederDto: CreateFeederDto) {
     return this.feederService.createFeeder(createFeederDto);
   }
 

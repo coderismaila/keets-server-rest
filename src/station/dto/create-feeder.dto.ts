@@ -7,7 +7,7 @@ export class CreateFeederDto {
   @ApiProperty({ type: String, description: 'Feeder name', required: true })
   @IsNotEmpty()
   @Length(3, 50)
-  @Transform(({ value }) => value.toUpperCase())
+  @Transform(({ value }) => value.toLowerCase(), { toClassOnly: true })
   name: string;
 
   @ApiProperty({
@@ -25,11 +25,13 @@ export class CreateFeederDto {
   routeLength?: number;
 
   @ApiProperty({ type: String, description: 'Feeder KAEDCO code' })
-  kaedcoCode: string;
+  @IsOptional()
+  kaedcoCode?: string;
 
   @ApiProperty({ type: String, description: 'Feeder NERC code' })
-  @IsNotEmpty()
-  nercCode: string;
+  @IsOptional()
+  @Transform(({ value }) => value.toLowerCase())
+  nercCode?: string;
 
   @ApiProperty({
     type: String,
@@ -37,4 +39,10 @@ export class CreateFeederDto {
   })
   @IsNotEmpty()
   powerTransformerId: string;
+
+  @IsNotEmpty()
+  stationId: string;
+
+  @IsNotEmpty()
+  areaOfficeId: string;
 }

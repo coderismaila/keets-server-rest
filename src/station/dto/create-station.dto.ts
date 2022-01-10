@@ -29,5 +29,11 @@ export class CreateStationDto {
   stationType: StationType;
 
   @IsOptional()
-  powerTransformer?: Array<{ name: string; capacityKVA: number }>;
+  powerTransformer?: Array<PowerTxDto>;
+}
+
+class PowerTxDto {
+  id?: string;
+  name: string;
+  capacityKVA: number;
 }

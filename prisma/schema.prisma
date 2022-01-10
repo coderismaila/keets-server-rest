@@ -42,13 +42,13 @@ model User {
 }
 
 model JobDescription {
-  id          String @id @default(cuid())
-  name        String @unique
+  id          String   @id @default(cuid())
+  name        String   @unique
   description String?
   created     DateTime @default(now())
   updated     DateTime @updatedAt
 
-  users        User[]
+  users User[]
 }
 
 model AreaOffice {
@@ -62,30 +62,43 @@ model AreaOffice {
   stations           Station[] @relation("stationAreaOffice")
   createdAt          DateTime  @default(now())
   updatedAt          DateTime? @updatedAt
+  feeders            Feeder[]
 }
 
 model Station {
-  id               String             @id @default(cuid())
-  name             String             @unique
-  areaOfficeId     String?
-  stationType      StationType
-  areaOffice       AreaOffice?        @relation(name: "stationAreaOffice", fields: [areaOfficeId], references: [id])
-  powerTransformer PowerTransformer[] @relation("stationPowerTransformer")
-  createdAt        DateTime           @default(now())
-  updatedAt        DateTime?          @updatedAt
+  id                String             @id @default(cuid())
+  name              String             @unique
+  stationType       StationType
+  areaOfficeId      String?
+  areaOffice        AreaOffice?        @relation(name: "stationAreaOffice", fields: [areaOfficeId], references: [id])
+  powerTransformer  PowerTransformer[] @relation("stationPowerTransformer")
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime?          @updatedAt
+  feeders           Feeder[]
+  powerTransformers PowerTransformer[] @relation("sourceStation")
 }
 
 model PowerTransformer {
-  id           String   @id @default(cuid())
-  name         String
-  capacityKVA  Float    @default(0)
-  feeder33kv   Feeder?  @relation(name: "feeder33kv", fields: [feeder33kvId], references: [id])
-  stationId    String
-  station      Station  @relation(name: "stationPowerTransformer", fields: [stationId], references: [id])
-  feeder33kvId String?  @unique
-  feeder       Feeder[] @relation("feederPowerTransformer")
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id                       String            @id @default(cuid())
+  name                     String
+  capacityKVA              Float             @default(0)
+  voltageRating            String?
+  ratedCurrent             Float             @default(0)
+  transformerPeakLoadMW    Float             @default(0)
+  sourceStationId          String?
+  sourceStation            Station?          @relation(name: "sourceStation", fields: [sourceStationId], references: [id])
+  sourcePowerTransformerId String?
+  sourcePowerTransformer   PowerTransformer? @relation(name: "powerTransformer", fields: [sourcePowerTransformerId], references: [id])
+  feeder33kvId             String?
+  feeder33kv               Feeder?           @relation(name: "feeder33kv", fields: [feeder33kvId], references: [id])
+  stationId                String?
+  station                  Station?          @relation(name: "stationPowerTransformer", fields: [stationId], references: [id])
+
+  feeder    Feeder[] @relation("feederPowerTransformer")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  PowerTransformers PowerTransformer[] @relation("powerTransformer")
 
   @@unique([name, stationId])
 }
@@ -95,8 +108,12 @@ model Feeder {
   name                   String             @unique
   voltageLevel           VoltageLevel
   routeLength            Float?             @default(0)
-  kaedcoCode             String             @unique
-  nercCode               String             @unique
+  kaedcoCode             String?             @unique
+  nercCode               String?
+  areaOfficeId           String
+  areaOffice             AreaOffice         @relation(fields: [areaOfficeId], references: [id])
+  stationId              String
+  station                Station            @relation(fields: [stationId], references: [id])
   powerTransformerId     String
   powerTransformer       PowerTransformer   @relation(name: "feederPowerTransformer", fields: [powerTransformerId], references: [id])
   powerTransformerSource PowerTransformer[] @relation("feeder33kv")

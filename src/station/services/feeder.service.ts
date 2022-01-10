@@ -20,6 +20,8 @@ export class FeederService {
       include: {
         powerTransformer: true,
         powerTransformerSource: true,
+        station: true,
+        areaOffice: true,
       },
     });
   }
@@ -29,6 +31,8 @@ export class FeederService {
       include: {
         powerTransformer: true,
         powerTransformerSource: true,
+        station: true,
+        areaOffice: true,
       },
     });
   }
@@ -75,6 +79,12 @@ export class FeederService {
     // check if feeder exist
     const feeder = await this.prismaService.feeder.findUnique({
       where: { id },
+      include: {
+        powerTransformer: true,
+        powerTransformerSource: true,
+        station: true,
+        areaOffice: true,
+      },
     });
 
     if (!feeder) throw new BadRequestException('feeder not found');
@@ -85,6 +95,8 @@ export class FeederService {
       include: {
         powerTransformer: true,
         powerTransformerSource: true,
+        station: true,
+        areaOffice: true,
       },
     });
   }
