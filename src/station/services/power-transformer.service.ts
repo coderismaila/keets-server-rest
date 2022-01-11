@@ -22,12 +22,13 @@ export class PowerTransformerService {
     if (!station) throw new BadRequestException('station not found');
 
     // check if name already exist in station
-    const powerTransformer = this.prismaService.powerTransformer.findFirst({
-      where: {
-        name: createPowerTransformerDto.name,
-        stationId: createPowerTransformerDto.stationId,
-      },
-    });
+    const powerTransformer =
+      await this.prismaService.powerTransformer.findFirst({
+        where: {
+          name: createPowerTransformerDto.name,
+          stationId: createPowerTransformerDto.stationId,
+        },
+      });
 
     if (powerTransformer)
       throw new BadRequestException(

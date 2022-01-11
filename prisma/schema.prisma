@@ -83,7 +83,7 @@ model PowerTransformer {
   name                     String
   capacityKVA              Float             @default(0)
   voltageRating            String?
-  ratedCurrent             Float             @default(0)
+  ratedCurrent             String?             
   transformerPeakLoadMW    Float             @default(0)
   sourceStationId          String?
   sourceStation            Station?          @relation(name: "sourceStation", fields: [sourceStationId], references: [id])
