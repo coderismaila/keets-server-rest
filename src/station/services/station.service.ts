@@ -37,7 +37,16 @@ export class StationService {
       include: {
         areaOffice: true,
         powerTransformer: {
-          include: { feeder33kv: true, feeder: true },
+          include: {
+            feeder33kv: true,
+            feeder: {
+              include: {
+                areaOffice: true,
+                station: true,
+                powerTransformer: true,
+              },
+            },
+          },
         },
       },
     });

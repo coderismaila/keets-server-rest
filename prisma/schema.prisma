@@ -33,11 +33,15 @@ model User {
   state             String?
   stateOfOrigin     String?
   country           String?        @default("nigeria")
+  stationId         String?
+  station           Station?       @relation(fields: [stationId], references: [id])
   areaOfficeId      String?
   areaOffice        AreaOffice?    @relation(name: "areaOffice", fields: [areaOfficeId], references: [id])
   technicalManagers AreaOffice[]   @relation("technicalManager")
   areaManagers      AreaOffice[]   @relation("areaManager")
+  outages           Outage[]
 
+  Outage Outage[] @relation("tagHolder")
   @@index([email, username, staffId, phoneNumber])
 }
 
@@ -76,6 +80,7 @@ model Station {
   updatedAt         DateTime?          @updatedAt
   feeders           Feeder[]
   powerTransformers PowerTransformer[] @relation("sourceStation")
+  users             User[]
 }
 
 model PowerTransformer {
@@ -83,7 +88,7 @@ model PowerTransformer {
   name                     String
   capacityKVA              Float             @default(0)
   voltageRating            String?
-  ratedCurrent             String?             
+  ratedCurrent             String?
   transformerPeakLoadMW    Float             @default(0)
   sourceStationId          String?
   sourceStation            Station?          @relation(name: "sourceStation", fields: [sourceStationId], references: [id])
@@ -108,7 +113,7 @@ model Feeder {
   name                   String             @unique
   voltageLevel           VoltageLevel
   routeLength            Float?             @default(0)
-  kaedcoCode             String?             @unique
+  kaedcoCode             String?            @unique
   nercCode               String?
   areaOfficeId           String
   areaOffice             AreaOffice         @relation(fields: [areaOfficeId], references: [id])
@@ -119,7 +124,43 @@ model Feeder {
   powerTransformerSource PowerTransformer[] @relation("feeder33kv")
   createdAt              DateTime           @default(now())
   updatedAt              DateTime           @updatedAt
+  outages                Outage[]
+  // loadReadings            LoadReading[]
 }
+
+model Outage {
+  id              String     @id @default(cuid())
+  feederId        String
+  feeder          Feeder     @relation(fields: [feederId], references: [id])
+  timeOut         DateTime
+  timeIn          DateTime?
+  outageType      OutageType
+  relayIndication String?
+  loadLoss        Float      @default(0)
+  tagNumber       Int?
+  tagHolderId     String?
+  tagHolderName   User?      @relation(name: "tagHolder", fields: [tagHolderId], references: [id])
+  thirdPartyName  String?
+  tagInTime       DateTime?
+  tagOutTime      DateTime?
+  cause           String?
+  resolution      String?
+  staffNameTCN    String?
+  staffId         String
+  staff           User       @relation(fields: [staffId], references: [id])
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+}
+
+// model LoadReading {
+//   id       String @id @default(cuid())
+//   feederId String
+//   feeder   Feeder @relation(fields: [feederId], references: [id])
+//   date DateTime
+
+//   createdAt       DateTime   @default(now())
+//   updatedAt       DateTime   @updatedAt
+// }
 
 enum Role {
   SUPER
@@ -149,4 +190,13 @@ enum Designation {
   TECHNICAL_MANAGER
   TEAM_LEAD
   TEAM_MEMBER
+}
+
+enum OutageType {
+  FORCED
+  EMERGENCY
+  PLANNED
+  SBT_COMPLIANCE
+  FREQUENCY_CONTROL
+  SYSTEM_COLLAPSE
 }

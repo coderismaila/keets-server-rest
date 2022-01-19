@@ -8,10 +8,6 @@ export class CreatePowerTransformerDto {
   @Transform(({ value }) => value.toLowerCase(), { toClassOnly: true })
   name: string;
 
-  @ApiProperty({ required: true, description: 'reference id of station' })
-  @IsNotEmpty()
-  stationId: string;
-
   @ApiProperty({
     required: true,
     description: 'capacity of power transformer in kva',
@@ -21,20 +17,24 @@ export class CreatePowerTransformerDto {
   capacityKVA: number;
 
   @IsOptional()
-  feeder33kvId?: string;
+  voltageRating?: string;
 
   @IsOptional()
-  voltageRating: string;
+  ratedCurrent?: string;
 
   @IsOptional()
-  ratedCurrent: number;
+  transformerPeakLoadMW: number;
 
   @IsOptional()
-  transformerPeakLoadMW?: number;
+  sourceStationId?: string;
 
   @IsOptional()
   sourcePowerTransformerId?: string;
 
   @IsOptional()
-  sourceStationId?: string;
+  feeder33kvId?: string;
+
+  @IsOptional()
+  @ApiProperty({ required: true, description: 'reference id of station' })
+  stationId?: string;
 }

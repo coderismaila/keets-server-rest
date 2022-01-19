@@ -6,6 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AreaOfficeModule } from './area-office/area-office.module';
 import { StationModule } from './station/station.module';
+import { OutageModule } from './outage/outage.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { StationModule } from './station/station.module';
     ConfigModule.forRoot(),
     AreaOfficeModule,
     StationModule,
+    OutageModule,
   ],
   controllers: [AppController],
   providers: [AppService],
