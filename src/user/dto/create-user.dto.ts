@@ -129,4 +129,7 @@ export class CreateUserDto {
 
   @IsNotEmpty()
   designation: Designation;
+
+  @IsOptional()
+  stationId?: string;
 }

@@ -1,6 +1,6 @@
 import { OutageType } from '@prisma/client';
 import { Transform } from 'class-transformer';
-import { IsEnum, IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
 
 export class CreateOutageDto {
   @IsNotEmpty()
@@ -11,12 +11,13 @@ export class CreateOutageDto {
   timeOut: Date;
 
   @Transform(({ value }) => (value ? new Date(value).toISOString() : null))
+  @IsOptional()
   timeIn?: Date;
 
   @IsNotEmpty()
   outageType: OutageType;
 
-  @IsNotEmpty()
+  @IsOptional()
   relayIndication?: string;
 
   @IsOptional()

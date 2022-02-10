@@ -15,8 +15,6 @@ export class StationService {
     });
     if (station) throw new BadRequestException('station name already exist');
 
-    console.log('createStationDto', createStationDto);
-
     return this.prismaService.station.create({
       data: {
         name: createStationDto.name,

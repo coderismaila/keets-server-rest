@@ -65,7 +65,7 @@ export class UserController {
     return this.userService.findUser({ staffId });
   }
 
-  @Auth(Role.SUPER, Role.ADMIN, Role.MOD)
+  @Auth(Role.SUPER, Role.ADMIN, Role.MOD, Role.USER)
   @Patch(':id')
   updateUser(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(id, updateUserDto);

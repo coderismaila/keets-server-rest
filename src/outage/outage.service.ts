@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { Role, User } from '@prisma/client';
 import { PrismaService } from 'src/prisma.service';
 import { CreateOutageDto } from './dto/create-outage.dto';
 import { UpdateOutageDto } from './dto/update-outage.dto';
@@ -22,7 +27,7 @@ export class OutageService {
     });
   }
 
-  findAllOutages() {
+  async findAllOutages() {
     return this.prismaService.outage.findMany({
       include: {
         tagHolderName: true,
@@ -37,10 +42,37 @@ export class OutageService {
     });
   }
 
+  async findAllStationOutages(user: User) {
+    if (
+      !user.stationId &&
+      (user.role === Role.ADMIN || user.role === Role.SUPER)
+    ) {
+      return this.findAllOutages();
+    }
+
+    if (
+      !user.stationId &&
+      (user.role === Role.MOD || user.role === Role.USER)
+    ) {
+      throw new UnauthorizedException();
+    }
+
+    const outages = await this.prismaService.outage.findMany({
+      where: {
+        feeder: { stationId: user.stationId },
+      },
+      include: { feeder: { include: { areaOffice: true } } },
+      orderBy: [{ createdAt: 'asc' }],
+    });
+
+    return outages;
+  }
+
   async findOutageById(id: string) {
     // check if outage exists
     const outage = await this.prismaService.outage.findFirst({
       where: { id },
+      include: { feeder: { include: { areaOffice: true } } },
     });
     if (!outage)
       throw new BadRequestException(`Outage with id ${id} does not exist`);
@@ -59,6 +91,7 @@ export class OutageService {
     return this.prismaService.outage.update({
       where: { id },
       data: updateOutageDto,
+      include: { feeder: { include: { areaOffice: true } } },
     });
   }
 
@@ -72,6 +105,7 @@ export class OutageService {
 
     return this.prismaService.outage.delete({
       where: { id },
+      include: { feeder: { include: { areaOffice: true } } },
     });
   }
 }

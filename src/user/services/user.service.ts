@@ -37,7 +37,7 @@ export class UserService {
 
   async findUsers(): Promise<User[]> {
     return this.prismaService.user.findMany({
-      include: { areaOffice: true, jobDescription: true },
+      include: { areaOffice: true, jobDescription: true, station: true },
     });
   }
 
@@ -53,7 +53,7 @@ export class UserService {
     }
     return this.prismaService.user.findUnique({
       where: userWhereUniqueInput,
-      include: { areaOffice: true, jobDescription: true },
+      include: { areaOffice: true, jobDescription: true, station: true },
     });
   }
 
@@ -66,7 +66,7 @@ export class UserService {
           { email: identifier },
         ],
       },
-      include: { jobDescription: true, areaOffice: true },
+      include: { jobDescription: true, areaOffice: true, station: true },
     });
 
     if (!user) throw new BadRequestException('Invalid user credentials');
@@ -84,7 +84,7 @@ export class UserService {
     return this.prismaService.user.update({
       where: { id },
       data: updateUserDto,
-      include: { jobDescription: true, areaOffice: true },
+      include: { jobDescription: true, areaOffice: true, station: true },
     });
   }
 
