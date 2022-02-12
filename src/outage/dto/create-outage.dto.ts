@@ -25,6 +25,7 @@ export class CreateOutageDto {
   loadLoss: number;
 
   @IsOptional()
+  @IsNumber({}, { message: 'Tag Number must be a number' })
   tagNumber?: number;
 
   @IsOptional()
