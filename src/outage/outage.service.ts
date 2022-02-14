@@ -27,8 +27,14 @@ export class OutageService {
     });
   }
 
-  async findAllOutages() {
+  async findAllOutages(startDate?, endDate?) {
     return this.prismaService.outage.findMany({
+      where: {
+        createdAt: {
+          gte: startDate,
+          lte: endDate,
+        },
+      },
       include: {
         tagHolderName: true,
         feeder: {

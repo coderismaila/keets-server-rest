@@ -8,6 +8,7 @@ import {
   Delete,
   Request,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { OutageService } from './outage.service';
 import { CreateOutageDto } from './dto/create-outage.dto';
@@ -25,8 +26,11 @@ export class OutageController {
   }
 
   @Get()
-  findAllOutages() {
-    return this.outageService.findAllOutages();
+  findAllOutages(
+    @Query('startDate') startDate?: string,
+    @Query('endDate') endDate?: string,
+  ) {
+    return this.outageService.findAllOutages(startDate, endDate);
   }
 
   @Get('station')
