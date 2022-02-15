@@ -23,6 +23,9 @@ export class CreatePowerTransformerDto {
   ratedCurrent?: string;
 
   @IsOptional()
+  @Transform(({ value }) =>
+    typeof value === 'string' ? parseFloat(value) : parseFloat(value),
+  )
   transformerPeakLoadMW: number;
 
   @IsOptional()
