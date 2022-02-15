@@ -91,10 +91,10 @@ export class CreateUserDto {
   @Transform(({ value }) => new Date(value).toISOString())
   birthDate?: Date;
 
-  @ApiProperty({ required: true, description: 'first name of user' })
-  @IsNotEmpty()
+  @ApiProperty({ required: true, description: 'user phone number' })
+  @IsOptional()
   @IsPhoneNumber()
-  phoneNumber: string;
+  phoneNumber?: string;
 
   @ApiProperty({ required: false, description: 'house number and street name' })
   @IsOptional()
