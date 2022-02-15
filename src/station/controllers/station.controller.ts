@@ -25,7 +25,7 @@ export class StationController {
     return this.stationService.createStation(createStationDto);
   }
 
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Get()
   findAllStation() {
     return this.stationService.findAllStation();
