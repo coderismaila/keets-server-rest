@@ -1,7 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { StationType } from '@prisma/client';
-import { Transform } from 'class-transformer';
-import { IsNotEmpty, IsOptional } from 'class-validator';
+import { Transform, Type } from 'class-transformer';
+import { IsEnum, IsNotEmpty, IsOptional } from 'class-validator';
+import { CreatePowerTransformerDto } from './create-power-transformer.dto';
 
 export class CreateStationDto {
   @ApiProperty({
@@ -21,19 +22,15 @@ export class CreateStationDto {
 
   @ApiProperty({
     required: true,
-    description: 'statio type',
+    description: 'station type',
     enum: StationType,
     enumName: 'stationType',
   })
   @IsNotEmpty()
+  @IsEnum({ enum: StationType })
   stationType: StationType;
 
   @IsOptional()
-  powerTransformer?: Array<PowerTxDto>;
-}
-
-class PowerTxDto {
-  id?: string;
-  name: string;
-  capacityKVA: number;
+  @Type(() => CreatePowerTransformerDto)
+  powerTransformer?: CreatePowerTransformerDto;
 }
