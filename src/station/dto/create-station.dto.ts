@@ -27,7 +27,6 @@ export class CreateStationDto {
     enumName: 'stationType',
   })
   @IsNotEmpty()
-  @IsEnum({ enum: StationType })
   stationType: StationType;
 
   @IsOptional()

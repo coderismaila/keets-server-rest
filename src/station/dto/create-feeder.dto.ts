@@ -26,6 +26,7 @@ export class CreateFeederDto {
 
   @ApiProperty({ type: String, description: 'Feeder KAEDCO code' })
   @IsOptional()
+  @Transform(({ value }) => (value == '' ? undefined : value))
   kaedcoCode?: string;
 
   @ApiProperty({ type: String, description: 'Feeder NERC code' })
