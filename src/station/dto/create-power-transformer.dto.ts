@@ -27,7 +27,7 @@ export class CreatePowerTransformerDto {
 
   @IsOptional()
   @IsNumber()
-  @Transform(({ value }) => (value === '' ? undefined : value))
+  @Transform(({ value }) => (value === '' ? undefined : parseFloat(value)))
   transformerPeakLoadMW: number;
 
   @IsOptional()
