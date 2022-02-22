@@ -27,13 +27,16 @@ export class OutageService {
     });
   }
 
-  async findAllOutages(startDate?, endDate?) {
+  async findAllOutages(user, startDate?, endDate?) {
     return this.prismaService.outage.findMany({
       where: {
         createdAt: {
           gte: startDate,
           lte: endDate,
         },
+        // feeder: {
+        //   areaOfficeId: user.areaOfficeId,
+        // },
       },
       include: {
         tagHolderName: true,
@@ -53,7 +56,7 @@ export class OutageService {
       !user.stationId &&
       (user.role === Role.ADMIN || user.role === Role.SUPER)
     ) {
-      return this.findAllOutages();
+      return this.findAllOutages(user);
     }
 
     if (

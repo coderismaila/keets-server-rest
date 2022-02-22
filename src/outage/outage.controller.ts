@@ -26,11 +26,13 @@ export class OutageController {
   }
 
   @Get()
+  @UseGuards(JwtAuthGuard)
   findAllOutages(
+    @Request() req: any,
     @Query('startDate') startDate?: string,
     @Query('endDate') endDate?: string,
   ) {
-    return this.outageService.findAllOutages(startDate, endDate);
+    return this.outageService.findAllOutages(req.user, startDate, endDate);
   }
 
   @Get('station')

@@ -31,7 +31,7 @@ export class CreateFeederDto {
 
   @ApiProperty({ type: String, description: 'Feeder NERC code' })
   @IsOptional()
-  @Transform(({ value }) => value.toLowerCase())
+  @Transform(({ value }) => value && value.toLowerCase())
   nercCode?: string;
 
   @ApiProperty({
