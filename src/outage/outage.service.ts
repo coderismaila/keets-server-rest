@@ -27,27 +27,43 @@ export class OutageService {
     });
   }
 
-  async findAllOutages(user, startDate?, endDate?) {
+  async findAllOutages(user: User, startDate?, endDate?) {
+    const where = {
+      createdAt: {
+        gte: startDate,
+        lte: endDate,
+      },
+    };
+    const include = {
+      tagHolderName: true,
+      feeder: {
+        include: {
+          areaOffice: true,
+          station: true,
+        },
+      },
+      staff: true,
+    };
+    // get head office id
+    const headOffice = await this.prismaService.areaOffice.findFirst({
+      where: { name: 'head office' },
+    });
+
+    if (user.areaOfficeId === headOffice.id) {
+      return this.prismaService.outage.findMany({
+        where,
+        include,
+      });
+    }
+
     return this.prismaService.outage.findMany({
       where: {
-        createdAt: {
-          gte: startDate,
-          lte: endDate,
-        },
-        // feeder: {
-        //   areaOfficeId: user.areaOfficeId,
-        // },
-      },
-      include: {
-        tagHolderName: true,
+        ...where,
         feeder: {
-          include: {
-            areaOffice: true,
-            station: true,
-          },
+          areaOfficeId: user.areaOfficeId,
         },
-        staff: true,
       },
+      include,
     });
   }
 
